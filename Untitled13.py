@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[23]:
-
-
 import numpy as np
 import pandas as pd
 import os
@@ -28,25 +25,12 @@ from keras.optimizers import *
 from keras.layers.normalization import BatchNormalization
 import tensorflow.keras.backend as K
 
-
-# In[6]:
-
-
+# Load the input dataset
 filename = 'Downloads/fer2013.csv'
 label_map = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 names=['emotion','pixels','usage']
 df=pd.read_csv('Downloads/fer2013.csv',names=names, na_filter=False)
 im=df['pixels']
-
-
-# In[3]:
-
-
-df
-
-
-# In[12]:
-
 
 def getData(filename):
     # images are 48x48
@@ -65,34 +49,18 @@ def getData(filename):
     X, Y = np.array(X) / 255.0, np.array(Y)
     return X, Y
 
-
-# In[13]:
-
-
 X, Y = getData(filename)
 num_class = len(set(Y))
 print(num_class)
 
-
-# In[14]:
-
-
 N, D = X.shape
 X = X.reshape(N, 48, 48, 1)
-
-
-# In[15]:
-
 
 from sklearn.model_selection import train_test_split
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.1, random_state=0)
 y_train = (np.arange(num_class) == y_train[:, None]).astype(np.float32)
 y_test = (np.arange(num_class) == y_test[:, None]).astype(np.float32)
-
-
-# In[17]:
-
 
 def my_model():
     model = Sequential()
@@ -128,10 +96,6 @@ def my_model():
 model=my_model()
 model.summary()
 
-
-# In[ ]:
-
-
 path_model='model_filter.h5' # save model at this location after each epoch
 K.clear_session() # destroys the current graph and builds a new one
 model=my_model() # create the model
@@ -144,14 +108,4 @@ h=model.fit(x=X_train,
             verbose=1, 
             validation_data=(X_test,y_test),
             shuffle=True,
-            callbacks=[
-                ModelCheckpoint(filepath=path_model),
-            ]
-            )
-
-
-# In[ ]:
-
-
-
-
+            callbacks=[ModelCheckpoint(filepath=path_model)])
