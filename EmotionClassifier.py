@@ -142,3 +142,4 @@ class EmotionClassifier:
         self.logger.info(result)
         labeled_result = {self.label_map[i]: result[0][i] for i in range(len(self.label_map))}
         return labeled_result
+
