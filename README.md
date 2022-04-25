@@ -1,10 +1,19 @@
 # 699-Final-Project
 
-## Requirements
-run <code>pip3 install -r requirements.txt</code>
+For testing the emotion model, the code would look like this:
 
-## Running The Program
-python3 main.py
+from skimage import io
 
-## Trained Model
-If you have a trained model no additional arguments are needed. The code assumes a model file named 'model_filter.h5' As long as it's in the same directory everything should be fine. If you don't have a trained model, on line 10 of LiveImageClassifier provide an argument of <code>train_model=True</code>. This will train the model and then begin image capture.
+img = image.load_img('testimages/wallpaper.jpg', grayscale=True, target_size=(48, 48))
+
+show_img=image.load_img('testimages/wallpaper2you_443897.jpg', grayscale=False, target_size=(200, 200))
+
+x = image.img_to_array(img)
+
+x = np.expand_dims(x, axis = 0)
+
+x /= 255
+
+custom = model.predict(x)
+
+print('Expression Prediction:',objects[ind])
