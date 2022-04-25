@@ -18,7 +18,6 @@ import tensorflow.keras.backend as K
 import tensorflow.keras.utils as util
 
 from sklearn.model_selection import train_test_split
-from skimage import io
 from skimage.transform import resize
 
 
@@ -61,10 +60,6 @@ class EmotionClassifier:
         self.logger.info('Loading Dataset')
 
         # Load the input dataset
-        column_names = ['emotion', 'pixels', 'usage']
-        dataset = pd.read_csv(self.training_filename, names=column_names, na_filter=False)
-        image_data = dataset['pixels']
-
         # images are 48x48
         # N = 35887
         self.Y = []     # Emotion

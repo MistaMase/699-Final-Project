@@ -11,7 +11,6 @@ class ImageCapture:
         self.video_capture = cv2.VideoCapture(0)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-        self.frame_number = 0
         self.text_properties = {
             'font': cv2.FONT_HERSHEY_SIMPLEX,
             'bottomLeftCornerOfText': (10, 50),
@@ -37,7 +36,6 @@ class ImageCapture:
             active_region_top_left = (455, 100)
             active_region_bottom_right = (805, 450)
             active_area_frame = gray_frame[active_region_top_left[1]:active_region_bottom_right[1], active_region_top_left[0]:active_region_bottom_right[0]]
-            cv2.imshow('Active Area', active_area_frame)
 
             # Draw the rectangle used for facial classification
             gray_frame = cv2.rectangle(
@@ -48,17 +46,14 @@ class ImageCapture:
                 1                                                                       # Thickness
             )
 
-            # Increment the frame number
-            self.frame_number += 1
-
             # Run the classifier
             emotions = self.fc.get_emotion(active_area_frame)
             self.logger.debug('Emotion List: %s', emotions)
             perceived_emotion = max(emotions, key=emotions.get)
             self.logger.info('Perceived Emotion: %s', perceived_emotion)
-
-            # Update the frame number text
-            cv2.putText(gray_frame,
+            
+            # Write the result from image classification to the active area image
+            cv2.putText(active_area_frame,
                         'Emotion: ' + perceived_emotion,
                         self.text_properties['bottomLeftCornerOfText'],
                         self.text_properties['font'],
@@ -67,8 +62,9 @@ class ImageCapture:
                         self.text_properties['thickness'],
                         self.text_properties['lineType'])
 
-            # Display the stream
+            # Display the frames
             cv2.imshow('Webcam', gray_frame)
+            cv2.imshow('Active Area', active_area_frame)
 
             # Break on 'q' key
             if cv2.waitKey(1) & 0xFF == ord('q'):
