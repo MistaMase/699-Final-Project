@@ -23,7 +23,7 @@ from skimage.transform import resize
 
 class EmotionClassifier:
 
-    def __init__(self, train_model=False, model_save_filename='model_filter.h5', logging_level=logging.INFO):
+    def __init__(self, train_model=True, model_save_filename='model_filter.h5', logging_level=logging.INFO):
         self.logging_level = logging_level
         logging.basicConfig(level=logging_level, format='%(levelname)s: %(name)s:  %(message)s')
         self.logger = logging.getLogger(__name__)
