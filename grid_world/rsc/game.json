@@ -1,0 +1,9 @@
+{
+  "video_settings": {"width": 400, "height": 600},
+  "robot_state": [4, 0],
+  "robot_img": "rsc/astroboy.jpg",
+  "goals": [{"name": "green", "color": [0, 200, 0], "goal_state": [0, 4], "target_states":  [[0, 4]]}],
+  "ditches": [[1, 4], [0, 0]],
+  "obstacles": [[2, 1], [2, 2], [3, 1], [3, 2]],
+  "num_grid": 5
+}

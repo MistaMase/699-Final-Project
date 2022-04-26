@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import random
+
 import logging
 
 import numpy as np
 import pandas as pd
+import cv2
 
 import keras
 from keras.models import Sequential
@@ -52,6 +55,7 @@ class EmotionClassifier:
 
         else:
             self.logger.info('Initialized Facial Classifier: Using existing model %s', self.model_save_filename)
+            self.load_dataset()
             self.model = keras.models.load_model(model_save_filename)
 
     # Load the input dataset
@@ -77,7 +81,7 @@ class EmotionClassifier:
         self.logger.debug('Number of Classes: %s', self.num_class)
 
         self.N, self.D = self.X.shape
-        self.X = self.X.reshape(self.N, 48, 48, 1)
+        self.X = np.reshape(self.X, (self.N, 48, 48, 1))
 
     def train(self):
         self.logger.info('Training Model')
@@ -85,12 +89,13 @@ class EmotionClassifier:
         self.y_train = (np.arange(self.num_class) == self.y_train[:, None]).astype(np.float32)
         self.y_test = (np.arange(self.num_class) == self.y_test[:, None]).astype(np.float32)
 
+
         K.set_value(self.model.optimizer.lr, self.learning_rate)
 
         self.h = self.model.fit(x=self.x_train,
                               y=self.y_train,
                               batch_size=64,
-                              epochs=20,
+                              epochs=15,
                               verbose=1,
                               validation_data=(self.x_test, self.y_test),
                               shuffle=True,
@@ -134,11 +139,11 @@ class EmotionClassifier:
     def get_emotion(self, img):
         self.logger.debug('Running Classifier Prediction')
         # Resize image to 48, 48
-        image_resized = resize(img, (48, 48), anti_aliasing=True)
-        image_array = util.img_to_array(image_resized)
-        image_array = np.expand_dims(image_array, axis=0)
-        image_array /= 255.0
-        result = self.model.predict(image_array)
+        cv2.imshow('Given Image', img)
+        image = np.array(img, dtype=np.float32)
+        image_resized = resize(image, (1, 48, 48, 1), anti_aliasing=True)
+        image_resized /= 255.0
+        result = self.model.predict(image_resized)
         self.logger.info(result)
         labeled_result = {self.label_map[i]: result[0][i] for i in range(len(self.label_map))}
         return labeled_result
